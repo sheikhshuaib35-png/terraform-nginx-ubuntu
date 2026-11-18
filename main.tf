@@ -27,6 +27,11 @@ data "aws_subnets" "default" {
     name   = "default-for-az"
     values = ["true"]
   }
+
+  filter {
+    name   = "availability-zone"
+    values = ["ap-south-1a"]
+  }
 }
 
 data "aws_ami" "ubuntu_2004" {
