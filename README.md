@@ -12,14 +12,29 @@ instance; the VPC and default subnet are looked up, not created.
 - One security group allowing HTTP (TCP port 80) from the internet and SSH
   (TCP port 22) only from the configured trusted CIDR.
 - One Terraform output containing the instance's public IPv4 address.
+- The EC2 instance and security group are tagged with `Name` and `ManagedBy`.
+
+## Project files
+
+- `main.tf`: AWS provider, default VPC/subnet and Ubuntu AMI lookups, security
+  group, EC2 instance, and Nginx startup script.
+- `variables.tf`: AWS region, instance type, and trusted SSH CIDR inputs.
+- `outputs.tf`: instance public IP.
+- `README.md`: setup, deployment, verification, submission, and cleanup steps.
 
 ## Prerequisites
 
 - An AWS account and credentials for a non-root identity with permission to
   describe VPCs, subnets, and AMIs and to create, describe, and delete EC2
   instances and security groups.
-- A selected AWS region with a default VPC and a default subnet. The default
-  region is `ap-south-1` (Mumbai); change `aws_region` if using another region.
+- The default region is `ap-south-1` (Asia Pacific, Mumbai). The configuration
+  uses the existing default VPC and selects its default subnet in
+  `ap-south-1a`.
+- In this AWS account, EC2 rejected `t2.micro` in `ap-south-1c` as unsupported.
+  The subnet lookup is therefore restricted to `ap-south-1a`, an Availability
+  Zone supported for this instance type in this account. If you change regions,
+  update the Availability Zone filter in `main.tf` to a supported zone that has
+  a default subnet; do not create a subnet or VPC for this assessment.
 - Terraform CLI 1.5.0 or later and AWS CLI installed locally.
 - Your public IPv4 address in CIDR notation for the SSH rule, usually `/32`.
 
@@ -71,9 +86,17 @@ After deployment, Terraform displays `instance_public_ip`. Open
 > Welcome to the Terraform-managed Nginx Server on Ubuntu
 
 The Nginx installation runs during instance startup, so the page may take a few
-minutes to become available. Before submitting, save a screenshot of the
-working page as `screenshots/nginx-working.png` and add it to this README with
-a Markdown image link.
+minutes to become available. After verifying the page, save a screenshot as
+`screenshots/nginx-working.png`. The image below is a submission placeholder
+until that screenshot is added:
+
+![Deployed Nginx welcome page](screenshots/nginx-working.png)
+
+## Submission
+
+Create a Git repository containing the Terraform files, `.terraform.lock.hcl`,
+README, and deployment screenshot. Push it to GitHub and submit the repository
+URL through the course portal.
 
 ## Destroy
 
